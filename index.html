@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>rangoli · draw a Diwali rangoli together, live</title>
+    <meta name="description" content="A shared rangoli board for Diwali. Send the link and draw together in real time, with mandala symmetry, powder colours, marigold petals and diyas that glow. Peer to peer, no server." />
+    <meta name="theme-color" content="#1a0f24" />
+    <meta property="og:title" content="rangoli · draw a Diwali rangoli together, live" />
+    <meta property="og:description" content="Send the link and draw together in real time: mandala symmetry, powder colours, marigold petals, diyas that glow. Peer to peer, no server." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://samarthjaiswal.github.io/rangoli/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="https://github.com/SAMARTHJAISWAL/rangoli" title="rangoli on GitHub">
+        <span class="deva" lang="hi">रंगोली</span>
+        <span class="latin">rangoli</span>
+        <svg class="gh" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span class="sr-only">(source on GitHub)</span>
+      </a>
+      <p class="tagline">Draw a Diwali rangoli together, live</p>
+      <div class="room">
+        <span class="status" id="status" role="status" aria-live="polite"><span class="pulse" aria-hidden="true"></span><span id="status-text">Connecting…</span></span>
+        <button type="button" class="btn primary" id="btn-invite">Invite</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="tools" aria-label="Drawing tools">
+        <div class="group" role="radiogroup" aria-label="Brush" id="brushes"></div>
+        <div class="group swatches" role="radiogroup" aria-label="Colour" id="colours"></div>
+        <div class="group row">
+          <div class="seg" role="radiogroup" aria-label="Brush size" id="sizes"></div>
+        </div>
+        <div class="group row">
+          <div class="seg" role="radiogroup" aria-label="Symmetry" id="folds"></div>
+          <button type="button" class="btn toggle" id="btn-mirror" aria-pressed="true" title="Mirror each copy (M)">Mirror</button>
+        </div>
+      </section>
+
+      <section class="stage" aria-label="Rangoli board">
+        <div class="board" id="board">
+          <canvas id="base" aria-hidden="true"></canvas>
+          <canvas id="fx" role="img" aria-label="The shared rangoli. Draw with a mouse, pen or finger."></canvas>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="actions" aria-label="Board actions">
+          <button type="button" class="btn" id="btn-undo" title="Undo your last stroke (Ctrl+Z)">Undo</button>
+          <button type="button" class="btn" id="btn-night" aria-pressed="false" title="Lights out for everyone, so the diyas glow (N)">Lights out</button>
+          <button type="button" class="btn" id="btn-burst" title="Set off a firework everyone sees (F)">Firework</button>
+          <button type="button" class="btn" id="btn-pattern" title="Add a finished rangoli to draw around">Sample rangoli</button>
+          <button type="button" class="btn" id="btn-guides" aria-pressed="true" title="Show the guide rings and dots (G)">Guides</button>
+          <button type="button" class="btn" id="btn-save" title="Download the board as a picture">Save image</button>
+          <button type="button" class="btn danger" id="btn-clear" title="Clear the board for everyone">Clear</button>
+        </div>
+        <div class="people">
+          <h2>In this room</h2>
+          <ul id="people" aria-live="polite"></ul>
+        </div>
+        <p class="note">Drawings go straight from browser to browser over WebRTC. Public Nostr relays only help you find each other, and the room link is the key.</p>
+      </aside>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <dialog id="welcome" aria-labelledby="welcome-title">
+      <form method="dialog">
+        <p class="kicker" lang="hi">शुभ दीपावली</p>
+        <h2 id="welcome-title">A rangoli board you share with a link</h2>
+        <p>Everyone with this room's link draws on the same board, live. Each stroke is repeated around the centre, so a single line becomes a ring of petals.</p>
+        <ul class="tips">
+          <li><strong>Powder, chalk, petals, dots, diyas</strong>: pick a brush and a colour, then draw.</li>
+          <li><strong>Invite</strong> copies the link. Send it to family and draw together.</li>
+          <li><strong>Lights out</strong> darkens the board for everyone, so the diyas glow.</li>
+        </ul>
+        <div class="dialog-actions">
+          <button class="btn primary" value="draw" autofocus>Start drawing</button>
+          <button class="btn" value="sample">Begin with a sample rangoli</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="confirm-clear" aria-labelledby="clear-title">
+      <form method="dialog">
+        <h2 id="clear-title">Clear the board for everyone?</h2>
+        <p>This erases every stroke on the board for everyone in the room. Anything someone is drawing at this moment will stay.</p>
+        <div class="dialog-actions">
+          <button class="btn danger" value="clear">Clear the board</button>
+          <button class="btn" value="cancel" autofocus>Keep it</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

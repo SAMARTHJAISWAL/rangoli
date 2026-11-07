@@ -1,0 +1,32 @@
+{
+  "name": "rangoli",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Draw a Diwali rangoli together, live, peer to peer, with no server.",
+  "license": "MIT",
+  "author": "Samarth Jaiswal",
+  "type": "module",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build:pages": "GITHUB_PAGES=true vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0"
+  },
+  "dependencies": {
+    "@fontsource/hind": "^5.3.0",
+    "@fontsource/tiro-devanagari-hindi": "^5.3.0",
+    "trystero": "0.26.0"
+  }
+}
